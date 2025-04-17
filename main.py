@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import FileResponse
+import json
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -10,14 +11,14 @@ CLAVE_SECRETA = "UNIVERSIDAD2025"
 
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
-    # Si accede a /openapi.json, no requiere autorización
-    if request.url.path == "/openapi.json":
+    # Excluir rutas públicas del control de autorización
+    if request.url.path in ["/openapi.json", "/favicon.ico"]:
         return await call_next(request)
 
     token = request.headers.get("Authorization")
     if token != f"Bearer {CLAVE_SECRETA}":
         raise HTTPException(status_code=403, detail="No autorizado")
-    
+
     return await call_next(request)
 
 
@@ -34,4 +35,6 @@ async def guardar_consulta(data: Consulta):
 
 @app.get("/openapi.json")
 async def serve_openapi():
-    return FileResponse("openapi.json", media_type="application/json")
+    with open("openapi.json") as f:
+        data = json.load(f)
+    return JSONResponse(content=data)
