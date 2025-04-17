@@ -1,13 +1,18 @@
 from fastapi import FastAPI, Request, HTTPException
-import json
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from datetime import datetime
+import json
+import os
 
 app = FastAPI()
 
 consultas = []
 CLAVE_SECRETA = "UNIVERSIDAD2025"
+
+class Consulta(BaseModel):
+    usuario: str
+    mensaje: str
 
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
