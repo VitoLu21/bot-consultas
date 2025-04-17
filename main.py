@@ -26,3 +26,8 @@ async def guardar_consulta(data: Consulta):
         "fecha": datetime.now().isoformat()
     })
     return {"estado": "ok", "mensaje_guardado": data.mensaje}
+from fastapi.responses import FileResponse
+
+@app.get("/openapi.json")
+async def serve_openapi():
+    return FileResponse("openapi.json", media_type="application/json")
