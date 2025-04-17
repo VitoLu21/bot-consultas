@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -26,7 +27,7 @@ async def guardar_consulta(data: Consulta):
         "fecha": datetime.now().isoformat()
     })
     return {"estado": "ok", "mensaje_guardado": data.mensaje}
-from fastapi.responses import FileResponse
+
 
 @app.get("/openapi.json")
 async def serve_openapi():
