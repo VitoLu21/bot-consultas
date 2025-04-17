@@ -1,36 +1,40 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "API Consultas Universidad",
-      "version": "1.0.0"
-    },
-    "paths": {
-      "/guardar_consulta": {
-        "post": {
-          "summary": "Guardar una consulta",
-          "operationId": "guardarConsulta",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "usuario": { "type": "string" },
-                    "mensaje": { "type": "string" }
-                  },
-                  "required": ["usuario", "mensaje"]
-                }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Consultas Universidad",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://bot-consultas.onrender.com"
+    }
+  ],
+  "paths": {
+    "/guardar_consulta": {
+      "post": {
+        "summary": "Guardar una consulta",
+        "operationId": "guardarConsulta",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "usuario": { "type": "string" },
+                  "mensaje": { "type": "string" }
+                },
+                "required": ["usuario", "mensaje"]
               }
             }
-          },
-          "responses": {
-            "200": {
-              "description": "Consulta guardada exitosamente"
-            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Consulta guardada exitosamente"
           }
         }
       }
     }
   }
-  
+}
