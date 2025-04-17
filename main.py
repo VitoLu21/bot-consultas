@@ -43,3 +43,7 @@ async def serve_openapi():
     with open("openapi.json") as f:
         data = json.load(f)
     return JSONResponse(content=data)
+
+@app.get("/ver_consultas")
+def ver_consultas():
+    return consultas
