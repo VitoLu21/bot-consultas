@@ -10,14 +10,17 @@ CLAVE_SECRETA = "UNIVERSIDAD2025"
 
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
+    # Si accede a /openapi.json, no requiere autorización
+    if request.url.path == "/openapi.json":
+        return await call_next(request)
+
     token = request.headers.get("Authorization")
     if token != f"Bearer {CLAVE_SECRETA}":
         raise HTTPException(status_code=403, detail="No autorizado")
+    
     return await call_next(request)
 
-class Consulta(BaseModel):
-    usuario: str
-    mensaje: str
+
 
 @app.post("/guardar_consulta")
 async def guardar_consulta(data: Consulta):
