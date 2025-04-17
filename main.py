@@ -46,4 +46,13 @@ async def serve_openapi():
 
 @app.get("/ver_consultas")
 def ver_consultas():
-    return consultas
+    consultas_serializadas = [
+        {
+            "usuario": c["usuario"],
+            "mensaje": c["mensaje"],
+            "fecha": c["fecha"]  # ya está como string si usaste .isoformat()
+        }
+        for c in consultas
+    ]
+    return JSONResponse(content=consultas_serializadas)
+
