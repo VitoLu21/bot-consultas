@@ -62,23 +62,14 @@ async def serve_openapi():
 
 @app.get("/descargar_consultas")
 def descargar_consultas():
-    # Verificar existencia del archivo JSON
     if not os.path.exists("consultas.json"):
         return {"error": "No hay consultas registradas"}
-    
     with open("consultas.json", "r") as f:
         consultas = json.load(f)
-
+    
     df = pd.DataFrame(consultas)
+    archivo_excel = "consultas.xlsx"
+    df.to_excel(archivo_excel, index=False)
 
-    # Crear archivo temporal
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
-        archivo_excel = tmp.name
-        df.to_excel(archivo_excel, index=False)
-
-    return FileResponse(
-        archivo_excel,
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        filename="consultas.xlsx"
-    )
+    return FileResponse(archivo_excel, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename=archivo_excel)
 
