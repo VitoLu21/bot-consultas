@@ -25,7 +25,7 @@ class Consulta(BaseModel):
 
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
-    rutas_publicas = ["/openapi.json", "/favicon.ico", "/ver_consultas", "/descargar_consultas"]
+    rutas_publicas = ["/openapi.json", "/favicon.ico", "/ver_consultas", "/descargar_consultas", "/"]  # <-- agregamos también la raíz
 
     if request.url.path in rutas_publicas:
         return await call_next(request)
