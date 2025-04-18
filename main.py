@@ -25,7 +25,7 @@ class Consulta(BaseModel):
 
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
-    if request.url.path in ["/openapi.json", "/favicon.ico"]:
+    if request.url.path in ["/openapi.json", "/favicon.ico","/descargar_consultas"]:
         return await call_next(request)
 
     token = request.headers.get("Authorization")
