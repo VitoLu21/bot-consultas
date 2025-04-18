@@ -25,7 +25,9 @@ class Consulta(BaseModel):
 
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
-    if request.url.path in ["/openapi.json", "/favicon.ico","/descargar_consultas"]:
+    rutas_publicas = ["/openapi.json", "/favicon.ico", "/ver_consultas", "/descargar_consultas"]
+
+    if request.url.path in rutas_publicas:
         return await call_next(request)
 
     token = request.headers.get("Authorization")
@@ -33,6 +35,7 @@ async def verificar_token(request: Request, call_next):
         raise HTTPException(status_code=403, detail="No autorizado")
 
     return await call_next(request)
+
 
 @app.post("/guardar_consulta")
 async def guardar_consulta(data: Consulta):
