@@ -5,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 import json
 import os
+import tempfile
 
 app = FastAPI()
 
@@ -61,17 +62,23 @@ async def serve_openapi():
 
 @app.get("/descargar_consultas")
 def descargar_consultas():
-    # Cargar archivo JSON si existe
+    # Verificar existencia del archivo JSON
     if not os.path.exists("consultas.json"):
         return {"error": "No hay consultas registradas"}
+    
     with open("consultas.json", "r") as f:
         consultas = json.load(f)
-    
-    # Exportar a Excel
+
     df = pd.DataFrame(consultas)
-    archivo_excel = "consultas.xlsx"
-    df.to_excel(archivo_excel, index=False)
-    
-    # Devolver archivo como respuesta
-    return FileResponse(archivo_excel, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename=archivo_excel)
+
+    # Crear archivo temporal
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        archivo_excel = tmp.name
+        df.to_excel(archivo_excel, index=False)
+
+    return FileResponse(
+        archivo_excel,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        filename="consultas.xlsx"
+    )
 
