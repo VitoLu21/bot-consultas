@@ -10,6 +10,13 @@ app = FastAPI()
 CLAVE_SECRETA = "UNIVERSIDAD2025"
 ARCHIVO_JSON = "consultas.json"
 
+# Cargar consultas previas si existe el archivo
+if os.path.exists(ARCHIVO_JSON):
+    with open(ARCHIVO_JSON, "r") as f:
+        consultas = json.load(f)
+else:
+    consultas = []
+
 class Consulta(BaseModel):
     usuario: str
     mensaje: str
@@ -27,34 +34,22 @@ async def verificar_token(request: Request, call_next):
 
 @app.post("/guardar_consulta")
 async def guardar_consulta(data: Consulta):
-    consulta = {
+    nueva_consulta = {
         "usuario": data.usuario,
         "mensaje": data.mensaje,
         "fecha": datetime.now().isoformat()
     }
 
-    # Leer archivo existente o crear lista nueva
-    if os.path.exists(ARCHIVO_JSON):
-        with open(ARCHIVO_JSON, "r") as f:
-            consultas = json.load(f)
-    else:
-        consultas = []
+    consultas.append(nueva_consulta)
 
-    consultas.append(consulta)
-
+    # Guardar en el archivo JSON
     with open(ARCHIVO_JSON, "w") as f:
-        json.dump(consultas, f, indent=2)
+        json.dump(consultas, f, indent=4)
 
     return {"estado": "ok", "mensaje_guardado": data.mensaje}
 
 @app.get("/ver_consultas")
 def ver_consultas():
-    if os.path.exists(ARCHIVO_JSON):
-        with open(ARCHIVO_JSON, "r") as f:
-            consultas = json.load(f)
-    else:
-        consultas = []
-
     return JSONResponse(content=consultas)
 
 @app.get("/openapi.json")
