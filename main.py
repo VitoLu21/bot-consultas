@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel
 from datetime import datetime
+import pandas as pd
 import json
 import os
 
@@ -57,3 +58,20 @@ async def serve_openapi():
     with open("openapi.json") as f:
         data = json.load(f)
     return JSONResponse(content=data)
+
+@app.get("/descargar_consultas")
+def descargar_consultas():
+    # Cargar archivo JSON si existe
+    if not os.path.exists("consultas.json"):
+        return {"error": "No hay consultas registradas"}
+    with open("consultas.json", "r") as f:
+        consultas = json.load(f)
+    
+    # Exportar a Excel
+    df = pd.DataFrame(consultas)
+    archivo_excel = "consultas.xlsx"
+    df.to_excel(archivo_excel, index=False)
+    
+    # Devolver archivo como respuesta
+    return FileResponse(archivo_excel, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename=archivo_excel)
+
