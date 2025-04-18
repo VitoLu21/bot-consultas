@@ -31,7 +31,7 @@ async def verificar_token(request: Request, call_next):
         return await call_next(request)
 
     token = request.headers.get("Authorization")
-    if token != f"Bearer {CLAVE_SECRETA}":
+    if token != f"Bearer UNIVERSIDAD2025":
         raise HTTPException(status_code=403, detail="No autorizado")
 
     return await call_next(request)
