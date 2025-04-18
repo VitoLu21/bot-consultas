@@ -17,7 +17,7 @@ class Consulta(BaseModel):
 @app.middleware("http")
 async def verificar_token(request: Request, call_next):
     # Excluir rutas públicas del control de autorización
-    if request.url.path in ["/openapi.json", "/favicon.ico"]:
+    if request.url.path in ["/openapi.json", "/favicon.ico", "/ver_consultas"]:
         return await call_next(request)
 
     token = request.headers.get("Authorization")
